@@ -7,28 +7,31 @@
 
     function factory(interactionTypes) {
         return function (question, answers, questionUrl) {
+			var sources = _.pluck(question.answers, 'key'),
+				targets = _.uniq(_.pluck(question.answers, 'value'));
+				
             var response = _.map(answers, function (value) {
-                return value.key.toLowerCase() + '[.]' + (value.value ? value.value.toLowerCase() : '');
+                return _.indexOf(sources, value.key) + '[.]' + (value.value ? _.indexOf(targets, value.value) : '');
             }).join('[,]');
 
-            var correctResponsesPattern = [_.map(question.answers, function (answer) {
-                    return answer.key.toLowerCase() + '[.]' + answer.value.toLowerCase();
+            var correctResponsesPattern = [_.map(question.answers, function (answer, index) {
+                    return index.toString() + '[.]' + _.indexOf(targets, answer.value);
                 }).join('[,]')];
 
-            var source = _.map(question.answers, function (answer) {
+            var source = _.map(sources, function (answer, index) {
                 return {
-                    id: answer.key.toLowerCase(),
+                    id: index.toString(),
                     description: {
-                        'en-US': answer.key
+                        'en-US': answer
                     }
                 };
             });
 
-            var target = _.map(question.answers, function (answer) {
+            var target = _.map(targets, function (answer, index) {
                 return {
-                    id: answer.value.toLowerCase(),
+                    id: index.toString(),
                     description: {
-                        'en-US': answer.value
+                        'en-US': answer
                     }
                 };
             });
