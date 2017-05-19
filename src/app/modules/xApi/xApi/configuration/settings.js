@@ -4,9 +4,9 @@
     angular.module('assessment.xApi')
         .factory('xApiSettings', xApiSettings);
 
-    xApiSettings.$inject = ['settings'];
+    xApiSettings.$inject = ['settings', 'publishSettings'];
 
-    function xApiSettings(settingsProvider) {
+    function xApiSettings(settingsProvider, publishSettingsProvider) {
         var settings = {
             xApi: {
                 allowedVerbs: [],
@@ -16,7 +16,7 @@
         };
 
         var host = window.location.host;
-        var lrsHost = (host.indexOf('localhost') === 0 || host.indexOf('elearning-staging') === 0 || host.indexOf('elearning-branches') === 0) ? 'reports-staging.easygenerator.com' : 'reports.easygenerator.com';
+        var lrsHost = publishSettingsProvider.defaultLRSUrl || 'reports.easygenerator.com';
 
         var defaultSettings = {
             lrs: {
