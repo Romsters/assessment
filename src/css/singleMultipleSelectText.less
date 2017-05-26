@@ -1,0 +1,85 @@
+﻿@import "common";
+
+.question {
+    .single-select-text, .multiple-select-text {
+        .border-box();
+
+        .answer-pair{
+            padding-left: 60px;
+            .border-box();
+        }
+
+        .answer {
+            position: relative;
+            border-radius: 5px;
+            z-index: 10;
+
+            cursor: pointer;
+            transition: background .2s linear;
+
+            .checkbox, .radio {             
+                .border-box();
+                .break-word();
+                position: relative;
+                display: inline-block;
+                width: 100%;
+                padding: 14px 20px 14px 70px;
+                line-height: 1.8;
+                cursor: pointer;
+                
+                &::before {   
+                    position: absolute;
+                    width: 40px;
+                    height: 40px;
+                    top: 50%;
+                    left: 15px;
+                    margin-top: -20px;
+                    z-index: 10;       
+
+                    transition: box-shadow .2s linear;
+                }
+
+                &::after{ 
+                    z-index: 11;
+                }
+            }
+
+            .checkbox {
+                &::before {
+                    border-radius: 3px;
+                    line-height: 40px;
+                    font-size: 18px;
+                    padding-left: 2px;
+                    text-align: center;
+                    
+                    -moz-transition: border-color .2s, background-color .2s, color .2s;
+                    -o-transition: border-color .2s, background-color .2s, color .2s;
+                    -webkit-transition: border-color .2s, background-color .2s, color .2s;
+                    transition: border-color .2s, background-color .2s, color .2s;
+
+                    .border-box();
+                }
+            }
+            
+            .radio {
+                &::before {
+                    content: "";
+                    border-radius: 50%;
+                }
+
+                &::after{
+                    content: "";
+                    position: absolute;
+                    display: block;
+                    width: 20px;
+                    height: 20px;
+                    top: 50%;
+                    left: 25px;
+                    margin-top: -10px;
+                    border-radius: 50%;
+                    transition: background .2s linear;
+                }
+            }
+        }
+    }
+}

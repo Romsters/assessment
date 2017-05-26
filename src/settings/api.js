@@ -105,7 +105,6 @@
     }
 
     function getUserModel(userData) {
-        userData = userData.data;
         var user = { accessType: 0 };
         var starterAccessType = 1;
         if (userData.subscription &&
@@ -124,16 +123,7 @@
             settings = JSON.parse(settingsData.settings);
         } else {
             //TODO: need to be removed in next implementation
-            settings = {
-                xApi: {
-                    enabled: true,
-                    selectedLrs: 'default',
-                    lrs: {
-                        credentials: {}
-                    }
-                },
-                masteryScore: {}
-            };
+            settings = {};
         }
         return settings;
     }

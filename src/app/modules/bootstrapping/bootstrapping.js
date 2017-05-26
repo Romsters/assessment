@@ -3,91 +3,80 @@
 
     angular.module('bootstrapping', []).run(runBlock);
 
-    runBlock.$inject = ['$q', 'detectDeviceTask', 'loadFontsTask', 'readSettingsTask', 'readPublishSettingsTask', 'preloadImages', 'preloadHtmlTask', 'authenticationTask'];
+    runBlock.$inject = ['$q', 'detectDeviceTask', 'readSettingsTask', 'preloadHtmlTask', 'authenticationTask', 'fixIEScrollTask', 'publishModuleLoader'];
 
-    function runBlock($q, detectDeviceTask, loadFontsTask, readSettingsTask, readPublishSettingsTask, preloadImages, preloadHtmlTask, authenticationTask) {
+    function runBlock($q, detectDeviceTask, readSettingsTask, preloadHtmlTask, authenticationTask, fixIEScrollTask, publishModuleLoader) {
         var tasks = {
             'detectDeviceTask': detectDeviceTask,
-            'loadFontsTask': loadFontsTask,
+            'fixIEScrollTask': fixIEScrollTask,
             'readSettings': readSettingsTask,
-            'readPublishSettings': readPublishSettingsTask,
             'authenticationTask': authenticationTask,
-            'preloadHtmlTask': preloadHtmlTask,
-            'preloadImages': preloadImages
+            'preloadHtmlTask': preloadHtmlTask
         };
 
         $q.all(tasks).then(function (data) {
             var bootstrapModules = ['assessment'],
                 settings = data.readSettings,
-                publishSettings = data.readPublishSettings.publishSettings,
-                publishModules = data.readPublishSettings.publishModules,
+                publishSettings = settings.publishSettings,
+                publishModules = publishSettings.modules,
                 user = data.authenticationTask,
-                preloadHtmls = data.preloadHtmlTask;
+                preloadHtmls = data.preloadHtmlTask,
+                promises = [];
 
             var hasLms = false;
             if (publishSettings && publishSettings.modules) {
-                hasLms = _.some(publishSettings.modules, function (module) {
-                    return module.name === 'lms';
+                _.each(publishModules, function(module) {
+                    !hasLms && (hasLms = module.name === 'lms');
+
+                    promises.push(publishModuleLoader.load(module.name).then(function(moduleInstance) {
+                        return moduleInstance;
+                    }, function() {
+                        throw 'Cannot load publish module "' + module.name + '".';
+                    }));
                 });
             }
 
-            angular.module('assessment').config(['$routeProvider', 'settingsProvider', 'htmlTemplatesCacheProvider', 'userProvider', '$translateProvider',
-                function ($routeProvider, settingsProvider, htmlTemplatesCacheProvider, userProvider, $translateProvider) {
-                    settingsProvider.setSettings(settings);
-                    userProvider.set(user);
-                    if (publishModules && publishModules.length > 0) {
-                        _.each(publishModules, function (module) {
-                            if (_.isObject(module.userInfoProvider)) {
-                                userProvider.use(module.userInfoProvider);
-                            }
-                        });
-                    }
-                    htmlTemplatesCacheProvider.set(preloadHtmls);
+            $q.all(promises).then(function(publishModules){
+                angular.module('assessment').config(['$routeProvider', 'settingsProvider', 'htmlTemplatesCacheProvider', 'userProvider', '$translateProvider',
+                    function ($routeProvider, settingsProvider, htmlTemplatesCacheProvider, userProvider, $translateProvider) {
+                        settingsProvider.setSettings(settings.templateSettings);
+                        userProvider.set(user);
+                        if (publishModules && publishModules.length > 0) {
+                            _.each(publishModules, function (module) {
+                                if (_.isObject(module.userInfoProvider)) {
+                                    userProvider.use(module.userInfoProvider);
+                                }
+                            });
+                        }
+                        htmlTemplatesCacheProvider.set(preloadHtmls);
 
-                    configureTranslateProvider($translateProvider, settings);
-                }]);
+                        $translateProvider
+                            .translations('xx', settings.translations)
+                            .preferredLanguage('xx');
 
-            if (!settings || _.isEmpty(settings) || (settings.xApi && settings.xApi.enabled)) {
-                bootstrapModules.push('assessment.xApi');
-            }
+                        window.WebFontLoader && WebFontLoader.load(settings.templateSettings.fonts, settings.manifest, publishSettings);
+                        window.LessProcessor && LessProcessor.load(settings.templateSettings.colors, settings.templateSettings.fonts);
+                    }]);
 
-            if (publishSettings) {
-                angular.module('assessment.publishSettings').config(['publishSettingsProvider', 'publishModulesProvider', function (publishSettingsProvider, publishModulesProvider) {
-                    publishSettingsProvider.setSettings(publishSettings);
-                    publishModulesProvider.set(publishModules);
-                }]);
+                if (!settings || !settings.templateSettings || _.isEmpty(settings.templateSettings) || (settings.templateSettings.xApi && settings.templateSettings.xApi.enabled)) {
+                    bootstrapModules.push('assessment.xApi');
+                }
 
-                bootstrapModules.push('assessment.publishSettings');
-            }
+                if (publishSettings) {
+                    angular.module('assessment.publishSettings').config(['publishSettingsProvider', 'publishModulesProvider', function (publishSettingsProvider, publishModulesProvider) {
+                        publishSettingsProvider.setSettings(publishSettings);
+                        publishModulesProvider.set(publishModules);
+                    }]);
 
-            if (!hasLms) {
-                bootstrapModules.push('assessment.progressStorer');
-            }
+                    bootstrapModules.push('assessment.publishSettings');
+                }
 
-            angular.bootstrap(document, bootstrapModules);
+                if (!hasLms) {
+                    bootstrapModules.push('assessment.progressStorer');
+                }
+
+                angular.bootstrap(document, bootstrapModules);
+            });
         });
-
-        function configureTranslateProvider($translateProvider, settings) {
-            var customLanguage = 'xx',
-                defaultLanguage = 'en',
-                customTranslations = {},
-                selectedLanguage = defaultLanguage;
-
-            if (settings && settings.languages) {
-                if (settings.languages.customTranslations) {
-                    customTranslations = settings.languages.customTranslations;
-                }
-                if (settings.languages.selected) {
-                    selectedLanguage = settings.languages.selected;
-                }
-            }
-
-            $translateProvider
-                .useStaticFilesLoader({ prefix: 'lang/', suffix: '.json' })
-                .translations(customLanguage, customTranslations)
-                .fallbackLanguage(defaultLanguage)
-                .preferredLanguage(selectedLanguage);
-        }
-
-    }
+    }    
 }());

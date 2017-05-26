@@ -34,9 +34,20 @@
                         $table.attr('align', 'center');
                         $table.wrap($wrapper);
                     });
+
+                    $('.audio-editor iframe', $element).each(function (index, iframe) {
+                        var $iframe = $(iframe);
+
+                        var src = $iframe.attr('src');
+                        $iframe.attr('src', src + '&style_variables=' + encodeURIComponent(getStyles()));
+                    });
  
                 });
             }
         };
+    }
+
+    function getStyles() {
+        return window.LessProcessor && window.LessProcessor.vars ? JSON.stringify({ '@main-color': window.LessProcessor.vars['@main-color'], '@content-body-color': window.LessProcessor.vars['@content-body-color'], '@text-color': window.LessProcessor.vars['@text-color'] }) : undefined;
     }
 }());

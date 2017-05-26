@@ -4,7 +4,10 @@
         <span class="vertical-align-helper"></span>
     </header>
     <div class="summary-header">
-        <span class="main-background"></span>
+        <main-background class="main-background">
+            <div class="main-background-image"></div>
+            <div class="main-background-overlay"></div>
+        </main-background>
         <div class="summary-header-content">
             <div class="header-title-container">
                 <div class="header-assessment-label">{{ '[assessment]' | translate }}</div>
@@ -16,7 +19,7 @@
             </div>
             <div class="summary-buttons">
                 <div class="summary-button-container" ng-if="!summary.singleAttempt">
-                    <button class="summary-button button large emphasize" ng-disabled="!summary.canTryAgain" ng-class="{ primary:!summary.reachMasteryScore, default:summary.reachMasteryScore, disabled: !summary.canTryAgain }" ng-click="summary.tryAgain()">
+                    <button class="summary-button button" ng-disabled="!summary.canTryAgain" ng-class="{ primary:!summary.reachMasteryScore, default:summary.reachMasteryScore, disabled: !summary.canTryAgain }" ng-click="summary.tryAgain()">
                         <span class="text-wrapper">
                             {{ '[try again]' | translate }}
                         </span>
@@ -26,10 +29,11 @@
                         <span class="summary-retry-notification" ng-show="summary.canTryAgain">
                             {{ '[attempts remaining]' | translate }}&nbsp;{{ summary.availableAttemptCount }}
                         </span>
+                        <i class="summary-retry-notification-icon"></i>
                     </div>
                 </div>
                 <div class="summary-button-container">
-                    <button class="summary-button button large emphasize" ng-class="{ primary:summary.reachMasteryScore || !summary.canTryAgain || summary.singleAttempt, default:!summary.reachMasteryScore }" ng-click="summary.finish()">
+                    <button class="summary-button button" ng-class="{ primary:summary.reachMasteryScore || !summary.canTryAgain || summary.singleAttempt, default:!summary.reachMasteryScore, attempts: summary.attemptsLimited }" ng-click="summary.finish()">
                         <span class="text-wrapper">
                             {{ '[finish course]' | translate }}
                         </span>
@@ -39,12 +43,17 @@
         </div>
     </div>
     <div class="summary-questions">
+        <secondary-background class="secondary-background">
+            <div class="secondary-background-image"></div>
+            <div class="secondary-background-overlay"></div>
+        </secondary-background>
         <div class="summary-questions-container">
             <div class="questions-title">{{ '[summary page questions list title]' | translate }}</div>
             <ul class="questions unstyled">
                 <li class="question-item" ng-repeat="question in summary.questions" ng-class="{ correct: question.isCorrect, survey: question.isSurvey }">
                     <div class="question-number-cell">
                         <div class="question-number-container">
+                            <i class="question-icon"></i>
                             <span class="question-number">{{ $index + 1 | leadingZeros: 2 }}</span>
                         </div>
                     </div>
