@@ -82,7 +82,7 @@ function analyzejscs(sources) {
         .pipe(jscs('.jscsrc'));
 }
 
-gulp.task('watch', function () {
+gulp.task('watch', ['process-less'], function () {
     gulp.watch('./src/css/*', ['process-less']);
 });
 
