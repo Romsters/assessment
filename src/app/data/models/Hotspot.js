@@ -8,19 +8,19 @@
     factory.$inject = ['Question'];
 
     function factory(Question) {
-        return function Hotspot(sectionId, id, title, hasContent, learningContents, type, background, spots, isMultiple) {
+        return function Hotspot(data) {
             var that = this,
                 _protected = {
                     answer: answer
                 };
 
-            Question.call(that, sectionId, id, title, hasContent, learningContents, type, _protected);
+            Question.call(that, data, _protected);
 
-            that.background = background;
+            that.background = data.background;
 
-            that.spots = spots;
+            that.spots = data.spots;
 
-            that.isMultiple = isMultiple;
+            that.isMultiple = data.isMultiple;
 
             function answer(marks) {
                 var score = calculateScore(that.isMultiple, that.spots, marks);

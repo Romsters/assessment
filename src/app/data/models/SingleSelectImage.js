@@ -8,17 +8,17 @@
     factory.$inject = ['Question'];
 
     function factory(Question) {
-        return function SingleSelectImage(sectionId, id, title, hasContent, learningContents, type, answers, correctAnswerId) {
+        return function SingleSelectImage(data) {
             var that = this,
                 _protected = {
                     answer: answer
                 };
 
-            Question.call(that, sectionId, id, title, hasContent, learningContents, type, _protected);
+            Question.call(that, data, _protected);
 
-            that.correctAnswerId = correctAnswerId;
+            that.correctAnswerId = data.correctAnswerId;
 
-            that.options = answers;
+            that.options = data.answers;
 
             function answer(selectedOptionId) {
                 that.score = selectedOptionId === that.correctAnswerId ? 100 : 0;

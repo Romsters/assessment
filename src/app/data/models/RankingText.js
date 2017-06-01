@@ -8,16 +8,16 @@
     factory.$inject = ['Question'];
 
     function factory(Question) {
-        return function RankingText(sectionId, id, title, hasContent, learningContents, type, answers) {
+        return function RankingText(data) {
             var that = this,
                 _protected = {
                     answer: answer
                 };
 
-            Question.call(that, sectionId, id, title, hasContent, learningContents, type, _protected);
+            Question.call(that, data, _protected);
 
-            that.answers = _.shuffle(answers);
-            that.correctOrderAnswers = answers;
+            that.answers = _.shuffle(data.answers);
+            that.correctOrderAnswers = data.answers;
 
             function answer(_answers) {
                 that.score = 100;

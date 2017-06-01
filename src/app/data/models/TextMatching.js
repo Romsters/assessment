@@ -8,15 +8,15 @@
     factory.$inject = ['Question'];
 
     function factory(Question) {
-        return function TextMatching(sectionId, id, title, hasContent, learningContents, type, answers) {
+        return function TextMatching(data) {
             var that = this,
                 _protected = {
                     answer: answer
                 };
 
-            Question.call(that, sectionId, id, title, hasContent, learningContents, type, _protected);
+            Question.call(that, data, _protected);
 
-            that.answers = answers;
+            that.answers = data.answers;
 
             function answer(pairs) {
                 var correct = 0;

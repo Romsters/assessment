@@ -8,21 +8,21 @@
     factory.$inject = ['Question'];
 
     function factory(Question) {
-        return function ScenarioQuestion(sectionId, id, title, hasContent, learningContents, type, projectId, embedCode, embedUrl, masteryScore) {
+        return function ScenarioQuestion(data) {
             var that = this,
                 _protected = {
                     answer: answer
                 };
 
-            Question.call(that, sectionId, id, title, hasContent, learningContents, type, _protected);
+            Question.call(that, data, _protected);
 
-            that.embedCode = embedCode;
+            that.embedCode = data.embedCode;
 
-            that.embedUrl = embedUrl;
+            that.embedUrl = data.embedUrl;
 
-            that.projectId = projectId;
+            that.projectId = data.projectId;
 
-            that.masteryScore = masteryScore;
+            that.masteryScore = data.masteryScore;
 
             function answer(score) {
                 that.score = score >= that.masteryScore ? 100 : 0;

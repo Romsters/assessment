@@ -13,7 +13,7 @@
 
             that.id = question.id;
             that.title = question.title;
-            that.content = question.content;
+            that.instructions = question.instructions;
             that.hint = new HintViewModel(question);
 
             that.isSurveyMode = question.hasOwnProperty('isSurvey') && question.isSurvey;
