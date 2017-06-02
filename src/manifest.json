@@ -868,6 +868,9 @@
     }
   ],
   "defaultTemplateSettings": {
+      "masteryScore": {
+          "score": 100
+      },
       "xApi": {
           "enabled": true,
           "required": false,
