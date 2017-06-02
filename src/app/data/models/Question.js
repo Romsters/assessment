@@ -5,33 +5,30 @@
         .module('assessment')
         .factory('Question', factory);
 
-    factory.$inject = ['$q', '$http', '$rootScope', 'ContentBlock'];
+    factory.$inject = ['$q', '$rootScope', 'LearningContent', 'htmlContentLoader'];
 
-    function factory($q, $http, $rootScope, ContentBlock) {
-        return function Question(data, _protected) {
+    function factory($q, $rootScope, LearningContent, htmlContentLoader) {
+        return function Question(sectionId, id, title, hasContent, learningContents, type, _protected, isSurvey) {
             var that = this;
-            that.id = data.id;
-            that.sectionId = data.sectionId;
-            that.title = data.title;
-            
+            that.id = id;
+            that.sectionId = sectionId;
+            that.title = title;
+
+            that.hasContent = hasContent;
+            that.content = null;
             that.affectProgress = true;
 
-            if (typeof data.isSurvey !== 'undefined') {
-                that.isSurvey = data.isSurvey;
+            if(typeof isSurvey !== 'undefined'){
+                that.isSurvey = isSurvey;
                 that.affectProgress = !that.isSurvey;
             }
 
-            that.learningContents = data.learningContents.map(function (contentBlock) {
-                var contentBlockUrl = 'content/' + that.sectionId + '/' + that.id + '/' + contentBlock.id + '.html';
-                return new ContentBlock(contentBlock.id, contentBlockUrl);
+            that.learningContents = learningContents.map(function (learningContent) {
+                var learningContentUrl = 'content/' + that.sectionId + '/' + that.id + '/' + learningContent.id + '.html';
+                return new LearningContent(learningContent.id, learningContentUrl);
             });
 
-            that.instructions = data.questionInstructions.map(function (contentBlock) {
-                var contentBlockUrl = 'content/' + that.sectionId + '/' + that.id + '/' + contentBlock.id + '.html';
-                return new ContentBlock(contentBlock.id, contentBlockUrl);
-            });
-
-            that.type = data.type;
+            that.type = type;
             that.score = 0;
 
             that.answer = function () {
@@ -50,19 +47,14 @@
                 });
             };
 
-            that.load = function () {
+            that.loadContent = function () {
                 return $q.when(null, function () {
-                    var promises = [];
-                    _.each(that.instructions, function (contentBlock) {
-                        promises.push($http.get(contentBlock.contentUrl, { dataType: 'html' }).success(function (response) {
-                            contentBlock.content = response;
-                        }));
-                    });
+                    if (!that.hasContent || that.content) {
+                        return;
+                    }
 
-                    return $q.all(promises).then(function() {
-                        if (!_.isNull(_protected) && _.isFunction(_protected.load)) {
-                            return _protected.load.apply(that);
-                        }
+                    return htmlContentLoader.load('content/' + that.sectionId + '/' + that.id + '/content.html').success(function (content) {
+                        that.content = content;
                     });
                 });
             };

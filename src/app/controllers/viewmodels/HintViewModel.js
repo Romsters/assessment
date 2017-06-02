@@ -45,21 +45,21 @@
                 question.learningContentsExperienced(that.hintEndTime - that.hintStartTime);
             }
 
-            function getLearningContents(contentBlocks) {
+            function getLearningContents(learningContents) {
                 var promises = [];
-                _.each(contentBlocks, function (contentBlock) {
-                    promises.push($http.get(contentBlock.contentUrl, { dataType: 'html' }).success(function (response) {
+                _.each(learningContents, function (learningContent) {
+                    promises.push($http.get(learningContent.contentUrl, { dataType: 'html' }).success(function (response) {
                         that.learningContents.push({
-                            id: contentBlock.id,
+                            id: learningContent.id,
                             content: response
                         });
                     }));
                 });
 
                 $q.all(promises).then(function () {
-                    that.learningContents = _.chain(contentBlocks).map(function (learningContent) {
-                        return _.find(that.learningContents, function (item) {
-                            return learningContent.id === item.id;
+                    that.learningContents = _.chain(learningContents).map(function (learningContent) {
+                        return _.find(that.learningContents, function (learnCont) {
+                            return learningContent.id == learnCont.id;
                         });
                     })
                     .value();

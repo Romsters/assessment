@@ -8,14 +8,15 @@
     factory.$inject = ['Question'];
 
     function factory(Question) {
-        return function MultipleSelectText(data) {
+        return function MultipleSelectText(sectionId, id, title, hasContent, learningContents, type, options, isSurvey) {
             var that = this,
                 _protected = {
                     answer: answer
                 };
-            Question.call(that, data, _protected);
 
-            that.options = data.answers;
+            Question.call(that, sectionId, id, title, hasContent, learningContents, type, _protected, isSurvey);
+
+            that.options = options;
 
             function answer(answers) {
                 that.score = 100;

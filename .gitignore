@@ -11,7 +11,3 @@ src/css/*.css
 src/vendor/
 /.output
 Web.config
-/.vs/config
-/src/media/*.jpg
-/src/media/*.png
-/src/media/*.gif

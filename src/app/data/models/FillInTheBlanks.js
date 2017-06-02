@@ -5,33 +5,19 @@
         .module('assessment')
         .factory('FillInTheBlanks', factory);
 
-    factory.$inject = ['$q', 'Question', 'htmlContentLoader'];
+    factory.$inject = ['Question'];
 
-    function factory($q, Question, htmlContentLoader) {
-        return function FillInTheBlanks(data) {
+    function factory(Question) {
+        return function FillInTheBlanks(sectionId, id, title, hasContent, learningContents, type, groups) {
             var that = this,
                 _protected = {
-                    answer: answer,
-                    load: loadContent
+                    answer: answer
                 };
 
-            Question.call(that, data, _protected);
+            Question.call(that, sectionId, id, title, hasContent, learningContents, type, _protected);
 
-            that.content = null;
-            that.hasContent = data.hasContent;
-            that.groups = data.answerGroups;
+            that.groups = groups;
 
-            function loadContent() {
-                var that = this;
-                return $q.when(null, function () {
-                    if (that.hasContent) {
-                        return htmlContentLoader.load('content/' + that.sectionId + '/' + that.id + '/content.html').success(function(content) {
-                            that.content = content;
-                        });
-                    }
-                });
-            }
-            
             function answer(answers) {
                 var correct = 0;
                 _.each(that.groups, function (group) {
@@ -46,5 +32,6 @@
                 that.score = correct === that.groups.length ? 100 : 0;
             }
         };
+
     }
 }());

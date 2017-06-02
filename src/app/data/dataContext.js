@@ -95,7 +95,7 @@
                     sectionsForCourse = generateSections(questionsForCourse);
 
                 return $q.all(questionsForCourse.map(function (question) {
-                    return question.load();
+                    return question.loadContent();
                 })).then(function () {
                     return self.assessment = new Assessment(self.id, self.templateId, self.title, self.createdOn, sectionsForCourse, questionsForCourse, self.hasIntroductionContent);
                 });

@@ -76,11 +76,9 @@
                                 <span class="index">{{ $index + 1 | leadingZeros: 2 }}</span>
                                 {{ question.title }}
                             </h2>
-                            <div class="question-instructions">
-                                <div class="question-instruction-content" ng-repeat="instruction in question.instructions">
-                                    <div html-compile="instruction.content" styled-content></div>
-                                </div>
-                            </div>
+                            <h3 class="question-content" ng-if="question.content">
+                                <div html-compile="question.content" styled-content></div>
+                            </h3>
                             <div class="question-body" ng-include="'app/views/' + question.getType() + '.html'"></div>
                         </div>
                         <div class="hint-container" ng-if="assessment.mode == 'quiz'">

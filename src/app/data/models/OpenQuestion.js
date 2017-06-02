@@ -8,13 +8,13 @@
     factory.$inject = ['Question'];
 
     function factory(Question) {
-        return function OpenQuestion(data) {
+        return function OpenQuestion(sectionId, id, title, hasContent, learningContents, type) {
             var that = this,
                 _protected = {
                     answer: answer
                 };
 
-            Question.call(that, data, _protected);
+            Question.call(that, sectionId, id, title, hasContent, learningContents, type, _protected);
 
             function answer(answers) {
                 that.score = answers ? 100 : 0;

@@ -3,10 +3,10 @@
 
     angular
         .module('assessment')
-        .factory('ContentBlock', factory);
+        .factory('LearningContent', factory);
 
     function factory() {
-        return function ContentBlock(id, contentUrl) {
+        return function LearningContent(id, contentUrl) {
             var that = this;
 
             that.id = id;

@@ -33,17 +33,17 @@
 	) {
 			
 		var models = {
-			singleSelectText: 	function (data) { return new SingleSelectText(data); },
-			statement: 			function (data) { return new Statement(data); },
-			singleSelectImage: 	function (data) { return new SingleSelectImage(data); },
-			dragAndDropText: 	function (data) { return new DragAndDropText(data); },
-			textMatching: 		function (data) { return new TextMatching(data); },
-			fillInTheBlank:		function (data) { return new FillInTheBlanks(data); },
-			hotspot: 			function (data) { return new Hotspot(data); },
-			multipleSelect: 	function (data) { return new MultipleSelectText(data); },
-			openQuestion: 		function (data) { return new OpenQuestion(data); },
-			scenario:           function (data) { return new ScenarioQuestion(data) },
-			rankingText:        function (data) { return new RankingText(data) }
+			singleSelectText: 	function (data) { return new SingleSelectText(data.sectionId, data.id, data.title, data.hasContent, data.learningContents, data.type, data.answers, data.isSurvey); },
+			statement: 			function (data) { return new Statement(data.sectionId, data.id, data.title, data.hasContent, data.learningContents, data.type, data.answers, data.isSurvey); },
+			singleSelectImage: 	function (data) { return new SingleSelectImage(data.sectionId, data.id, data.title, data.hasContent, data.learningContents, data.type, data.answers, data.correctAnswerId); },
+			dragAndDropText: 	function (data) { return new DragAndDropText(data.sectionId, data.id, data.title, data.hasContent, data.learningContents, data.type, data.background, data.dropspots); },
+			textMatching: 		function (data) { return new TextMatching(data.sectionId, data.id, data.title, data.hasContent, data.learningContents, data.type, data.answers); },
+			fillInTheBlank:		function (data) { return new FillInTheBlanks(data.sectionId, data.id, data.title, data.hasContent, data.learningContents, data.type, data.answerGroups); },
+			hotspot: 			function (data) { return new Hotspot(data.sectionId, data.id, data.title, data.hasContent, data.learningContents, data.type, data.background, data.spots, data.isMultiple); },
+			multipleSelect: 	function (data) { return new MultipleSelectText(data.sectionId, data.id, data.title, data.hasContent, data.learningContents, data.type, data.answers, data.isSurvey); },
+			openQuestion: 		function (data) { return new OpenQuestion(data.sectionId, data.id, data.title, data.hasContent, data.learningContents, data.type); },
+			scenario:           function (data) { return new ScenarioQuestion(data.sectionId, data.id, data.title, data.hasContent, data.learningContents, data.type, data.projectId, data.embedCode, data.embedUrl, data.masteryScore) },
+			rankingText:        function (data) { return new RankingText(data.sectionId, data.id, data.title, data.hasContent, data.learningContents, data.type, data.answers) }
 		};
 		
 		return {
