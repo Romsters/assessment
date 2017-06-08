@@ -60,6 +60,8 @@
 @icon-searchPlus-content: "\e924";
 @icon-arrowRight-content: "\e925";
 @icon-survey-content: "\e99c";
+@icon-file-content: "\e898";
+@icon-zip-content: "\e899";
 
 .icon() {
     /* use !important to prevent issues with browser extensions that change fonts */
@@ -235,5 +237,11 @@
 
     &.survey::before {
       content: @icon-survey-content;
+    }
+    &.file::before {
+      content: @icon-file-content;
+    }
+    &.zip::before {
+      content: @icon-zip-content;
     }
 }
