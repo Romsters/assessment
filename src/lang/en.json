@@ -53,5 +53,6 @@
     "[login email field]": "Email",
     "[start quiz]": "Start quiz",
     "[statement question or text]": "or",
-    "[page not found title]": "Page not found"
+    "[page not found title]": "Page not found",
+    "[download]": "Download"
 }

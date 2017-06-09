@@ -3,9 +3,9 @@
     
     angular.module('assessment').directive('hint', directive);
 
-    directive.$inject = ['$compile'];
+    directive.$inject = ['$compile', 'documentBlockHelper'];
 
-    function directive($compile) {
+    function directive($compile, documentBlockHelper) {
         return {
             restrict: 'A',
             link: function ($scope, $element, attrs) {
@@ -15,7 +15,7 @@
                     if (!_.isUndefined(newValue)) {
                         var dataType = getLearningContentType(newValue);
                         switch(dataType){
-                            case 'hotspot': 
+                            case 'hotspot': {
 							    var hotspotOnImage = HotspotStorage.create($(newValue)[0]);
                         
 								$element.addClass('hotspot-on-image-container');
@@ -24,14 +24,28 @@
 								$element.on('$destroy', function () {
 								    HotspotStorage.remove(hotspotOnImage);
 								});
+                                onHintCreated();
                                 break;
-                            default:
+                            }
+                            case 'document': {
+                                documentBlockHelper.getDocumentBlockContent(newValue).then(function(content) {
+                                    $element.append(content);
+                                    onHintCreated();
+                                });
+                                break;
+                            }
+                            default: {
                                 $element.html(newValue);
+                                onHintCreated();
+                            }
                         }
-                        $compile($element.contents())($scope);
-                        $scope.$emit('$includeContentLoaded');
-                        unbind();
                     }
+                }
+
+                function onHintCreated() {
+                    $compile($element.contents())($scope);
+                    $scope.$emit('$includeContentLoaded');
+                    unbind();
                 }
                 
                 function getLearningContentType(data){
